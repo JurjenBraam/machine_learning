@@ -66,20 +66,6 @@ train[label_column] = label_map[train[label_column]].values
 all_data = train.append(test)
 all_data.set_index('listing_id', inplace=True)
 
-# Filter the bad coordinates
-all_data['bad_addr'] = 0
-mask = ~all_data['latitude'].between(40.5, 40.9)
-mask = mask | ~all_data['longitude'].between(-74.05, -73.7)
-bad_rows = all_data[mask]
-all_data.loc[mask, 'bad_addr'] = 1
-
-
-# Replace bad cordinates with mean coordinates
-mean_lat = all_data.loc[all_data['bad_addr']==0, 'latitude'].mean()
-all_data.loc[all_data['bad_addr']==1, 'latitude'] = mean_lat
-mean_long = all_data.loc[all_data['bad_addr']==0, 'longitude'].mean()
-all_data.loc[all_data['bad_addr']==1, 'longitude'] = mean_long
-
 
 # Adding the derived scores to the dataframe
 all_data['feature_score'] = all_data['features'].apply(calculate_scorelist)
@@ -95,7 +81,7 @@ all_data['upload_hour'] = all_data.apply(lambda row: float(row['created'][11:13]
 
 # Remove the colums which aren't used by the classifier
 drop_cols = ['display_address', 'street_address',
-'created','building_id','manager_id', 'bad_addr']
+'created','building_id','manager_id']
 all_data.drop(drop_cols, axis=1, inplace=True)
 
 # Devide the data into labeled train data and unlabeled test data
