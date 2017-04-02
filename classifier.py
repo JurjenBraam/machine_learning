@@ -46,7 +46,7 @@ label_column = 'interest_level'
 num_classes = 3
 
 # Load the train and test data
-train = pd.read_json("./input/train.json", 100)
+train = pd.read_json("./input/train.json")
 test = pd.read_json("./input/test.json")
 
 # Load calculated scores from csv files
